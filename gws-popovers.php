@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name: GWS PopOvers
- * Description: Gutenberg Popovers mit nativer Popover API, Exit Intent, Timer, Seitenzuordnung und Cookies.
- * Version: 1.0.1
+ * Description: Gutenberg Popups mit nativen modalen oder nicht-modalen HTML-Dialogen, Exit Intent, Timer, Seitenzuordnung und Cookies.
+ * Version: 1.2.1
  * Requires at least: 6.3
  * Requires PHP: 7.4
  * Author: GWS
  * Text Domain: gws-popovers
  */
 if (!defined('ABSPATH')) { exit; }
-define('GWS_PO_VERSION', '1.0.1');
+define('GWS_PO_VERSION', '1.2.1');
 define('GWS_PO_DIR', plugin_dir_path(__FILE__));
 define('GWS_PO_URL', plugin_dir_url(__FILE__));
 require_once GWS_PO_DIR . 'includes/config.php';
