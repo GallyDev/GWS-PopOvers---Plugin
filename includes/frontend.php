@@ -29,6 +29,8 @@ function gws_po_render_frontend() {
     foreach ($items as $item) {
         $trigger = get_post_meta($item->ID, 'gws_po_trigger', true);
         if (!in_array($trigger, array('exit', 'timed'), true)) { $trigger = 'exit'; }
+        $display = get_post_meta($item->ID, 'gws_po_display', true);
+        if (!in_array($display, array('modal', 'nonmodal'), true)) { $display = 'modal'; }
         $raw_delay = get_post_meta($item->ID, 'gws_po_delay', true);
         $raw_days = get_post_meta($item->ID, 'gws_po_cookie_days', true);
         $delay = $raw_delay === '' ? 5000 : absint($raw_delay);
@@ -44,21 +46,22 @@ function gws_po_render_frontend() {
         $post = $original_post;
         if ($original_post instanceof WP_Post) { setup_postdata($original_post); } else { wp_reset_postdata(); }
         ?>
-        <div id="<?php echo esc_attr($id); ?>"
+        <dialog id="<?php echo esc_attr($id); ?>"
              class="gws-po"
-             popover="manual"
-             role="dialog"
-             aria-modal="false"
-             aria-label="<?php echo esc_attr(get_the_title($item)); ?>"
+             data-gws-display="<?php echo esc_attr($display); ?>"
+             aria-labelledby="<?php echo esc_attr($id); ?>-title"
              data-gws-trigger="<?php echo esc_attr($trigger); ?>"
              data-gws-delay="<?php echo esc_attr($delay); ?>"
              data-gws-days="<?php echo esc_attr($days); ?>"
              data-gws-id="<?php echo esc_attr($item->ID); ?>">
-            <button type="button" class="gws-po__close" data-gws-close aria-label="PopOver schliessen" title="Schliessen">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class="gws-po__content"><?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The_content filtered WP block HTML. ?></div>
-        </div>
+            <h2 id="<?php echo esc_attr($id); ?>-title" class="gws-po__heading"><?php echo esc_html(get_the_title($item)); ?></h2>
+            
+            <div class="gws-po__content">
+                <button type="button" class="gws-po__close" data-gws-close autofocus aria-label="<?php echo esc_attr__('Dialog schliessen', 'gws-popovers'); ?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The_content filtered WP block HTML. ?></div>
+        </dialog>
         <?php
     }
 }
