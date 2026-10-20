@@ -20,7 +20,7 @@ function gws_po_register_post_type() {
     ));
 
     // Native Fields und ACF/SCF schreiben dieselben Meta-Keys.
-    foreach (array('gws_po_trigger' => 'string', 'gws_po_delay' => 'integer', 'gws_po_cookie_days' => 'integer') as $key => $type) {
+    foreach (array('gws_po_trigger' => 'string', 'gws_po_display' => 'string', 'gws_po_delay' => 'integer', 'gws_po_cookie_days' => 'integer') as $key => $type) {
         register_post_meta('gws_popover', $key, array(
             'single' => true, 'type' => $type, 'show_in_rest' => true,
             'sanitize_callback' => $type === 'integer' ? 'absint' : 'sanitize_text_field',
@@ -53,6 +53,13 @@ function gws_po_register_field_group() {
                 'name' => 'gws_po_trigger', 'type' => 'radio',
                 'choices' => array('exit' => 'Exit Intent', 'timed' => 'Zeitgesteuert'),
                 'default_value' => 'exit', 'layout' => 'horizontal',
+            ),
+            array(
+                'key' => 'field_gws_po_display', 'label' => 'Darstellung',
+                'instructions' => 'Modal blockiert die Seite; nicht-modal lässt die Seite bedienbar.',
+                'name' => 'gws_po_display', 'type' => 'radio',
+                'choices' => array('modal' => 'Modal', 'nonmodal' => 'Nicht-modal'),
+                'default_value' => 'modal', 'layout' => 'horizontal',
             ),
             array(
                 'key' => 'field_gws_po_delay', 'label' => 'Verzögerung nach Pageload (ms)',
@@ -90,6 +97,7 @@ add_action('add_meta_boxes_gws_popover', 'gws_po_add_native_metabox');
 function gws_po_native_metabox($post) {
     wp_nonce_field('gws_po_save', 'gws_po_nonce');
     $trigger = get_post_meta($post->ID, 'gws_po_trigger', true) ?: 'exit';
+    $display = get_post_meta($post->ID, 'gws_po_display', true) ?: 'modal';
     $delay = get_post_meta($post->ID, 'gws_po_delay', true);
     $days = get_post_meta($post->ID, 'gws_po_cookie_days', true);
     $targets = gws_po_sanitize_targets(get_post_meta($post->ID, 'gws_po_targets', true));
@@ -99,6 +107,12 @@ function gws_po_native_metabox($post) {
         <select id="gws_po_trigger" name="gws_po_trigger">
             <option value="exit" <?php selected($trigger, 'exit'); ?>>Exit Intent</option>
             <option value="timed" <?php selected($trigger, 'timed'); ?>>Zeitgesteuert</option>
+        </select>
+    </p>
+    <p><label for="gws_po_display"><strong>Darstellung</strong></label><br>
+        <select id="gws_po_display" name="gws_po_display">
+            <option value="modal" <?php selected($display, 'modal'); ?>>Modal (Hintergrund gesperrt)</option>
+            <option value="nonmodal" <?php selected($display, 'nonmodal'); ?>>Nicht-modal (Hintergrund bedienbar)</option>
         </select>
     </p>
     <p><label for="gws_po_delay"><strong>Verzögerung nach Pageload (Millisekunden)</strong></label><br>
@@ -122,6 +136,8 @@ function gws_po_save_native_metabox($post_id) {
     if (wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id)) { return; }
     $trigger = isset($_POST['gws_po_trigger']) ? sanitize_text_field(wp_unslash($_POST['gws_po_trigger'])) : 'exit';
     update_post_meta($post_id, 'gws_po_trigger', in_array($trigger, array('exit', 'timed'), true) ? $trigger : 'exit');
+    $display = isset($_POST['gws_po_display']) ? sanitize_text_field(wp_unslash($_POST['gws_po_display'])) : 'modal';
+    update_post_meta($post_id, 'gws_po_display', in_array($display, array('modal', 'nonmodal'), true) ? $display : 'modal');
     update_post_meta($post_id, 'gws_po_delay', isset($_POST['gws_po_delay']) ? absint($_POST['gws_po_delay']) : 5000);
     update_post_meta($post_id, 'gws_po_cookie_days', isset($_POST['gws_po_cookie_days']) ? absint($_POST['gws_po_cookie_days']) : 7);
     $targets = isset($_POST['gws_po_targets']) && is_array($_POST['gws_po_targets']) ? wp_unslash($_POST['gws_po_targets']) : array();
