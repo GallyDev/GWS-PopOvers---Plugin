@@ -1,0 +1,67 @@
+/* Nutzt globale Presets und Styles aus theme.json über die WordPress-CSS-Variablen. */
+.gws-po[popover] {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  width: min(92vw, var(--wp--style--global--content-size));
+  max-width: 92vw;
+  max-height: min(85vh, 800px);
+  overflow: auto;
+  border: 0px;
+  border-radius: var(--wp--custom--border--radius, 1rem);
+  box-shadow: var(--wp--custom--box-shadow, 0 20px 65px rgb(0 0 0 / 23%));
+  background: var(--wp--preset--color--light, #fff);
+  z-index: 2147483000;
+}
+.gws-po:popover-open { 
+  display: block; 
+}
+.gws-po::backdrop { 
+  background-color: rgb(0 0 0 / 46%); 
+}
+
+.gws-po__close {
+  position: sticky;
+  top: 1rem;
+  float: right;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 1rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wp--preset--color--dark, #222);
+  color: var(--wp--preset--color--light, #fff);
+  font: inherit;
+  font-size: 1.6rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: var(--wp--custom--main-trans, all .3s ease-in-out);
+
+  &:focus-visible,
+  &:hover { 
+    outline: 3px solid var(--wp--preset--color--typo, #222); 
+    outline-offset: 3px; 
+  }
+}
+.gws-po__close
+
+.gws-po__content > :first-child { 
+  margin-top: 0; 
+}
+.gws-po__content > :last-child { 
+  margin-bottom: 0; 
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gws-po:popover-open { 
+    animation: gws-po-appear .3s ease-out; 
+  }
+  
+  @keyframes gws-po-appear { 
+    from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } 
+  }
+}
