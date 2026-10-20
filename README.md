@@ -26,7 +26,7 @@ Anschliessend unter **GWS PopOvers > Neu hinzufügen** ein PopOver anlegen, Tite
 - SCF/ACF werden zur Laufzeit erkannt; ist keine der APIs vorhanden, aktiviert sich der native Metabox-Fallback. Änderungen am Plugin-Status von SCF/ACF benötigen keinen Reinstall.
 
 ## Theme Anpassung
-CSS referenziert standardmässig `--wp--preset--color--base`, `--wp--preset--color--contrast`, `--wp--preset--color--primary`, `--wp--preset--font-family--body`, `--wp--preset--font-size--medium` und optional `--wp--custom--border--radius`. Eigene Themes können `.gws-po`, `.gws-po__content`, `.gws-po__close` überschreiben.
+CSS referenziert standardmässig `--wp--preset--color--light`, `--wp--preset--color--typo`, `--wp--preset--color--primary`, `--wp--style--global--content-size`, `--wp--custom--main-trans`, `--wp--custom--box-shadow`und optional `--wp--custom--border--radius`. Eigene Themes können `.gws-po`, `.gws-po__content`, `.gws-po__close` überschreiben.
 
 ## Hinweise
-Die native Popover API ist nicht modal. Für verbindliche Modals wäre `<dialog>` geeigneter. Ein serverseitiger Full-Page-Cache ist unproblematisch, da die Cookie-Sperre clientseitig geprüft wird. In Content-Blöcken eingebundene Formulare oder Scripts müssen separat kompatibel mit dem Theme sein. Für Analytics/Consent keine Daten vor Einwilligung erfassen.
+Ein serverseitiger Full-Page-Cache ist unproblematisch, da die Cookie-Sperre clientseitig geprüft wird. In Content-Blöcken eingebundene Formulare oder Scripts müssen separat kompatibel mit dem Theme sein. Für Analytics/Consent keine Daten vor Einwilligung erfassen.
