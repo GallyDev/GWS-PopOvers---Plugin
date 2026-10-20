@@ -1,35 +1,41 @@
-/* Nutzt globale Presets und Styles aus theme.json über die WordPress-CSS-Variablen. */
-.gws-po[popover] {
+/* Theme JSON preset/custom properties; browser-native modal top layer. */
+.gws-po {
   box-sizing: border-box;
-  position: fixed;
-  inset: 0;
-  margin: auto;
-  padding: 0;
-  width: min(92vw, var(--wp--style--global--content-size));
+  width: min(92vw, var(--wp--style--global--content-size, 680px));
   max-width: 92vw;
   max-height: min(85vh, 800px);
+  margin: auto;
+  padding: 0;
   overflow: auto;
-  border: 0px;
+  border: 0;
   border-radius: var(--wp--custom--border--radius, 1rem);
   box-shadow: var(--wp--custom--box-shadow, 0 20px 65px rgb(0 0 0 / 23%));
   background: var(--wp--preset--color--light, #fff);
+  color: var(--wp--preset--color--dark, #222);
+  font-family: inherit;
+}
+.gws-po:not([open]) { display: none; }
+/* show() is non-modal: the UA normally positions a modeless dialog statically.
+   Position it as a floating surface without blocking the page. */
+.gws-po[data-gws-display="nonmodal"][open] {
+  position: fixed;
+  inset: auto 1.25rem 1.25rem auto;
+  margin: 0;
+  width: min(420px, calc(100vw - 2.5rem));
+  max-height: min(70vh, 650px);
   z-index: 2147483000;
 }
-.gws-po:popover-open { 
-  display: block; 
-}
 .gws-po::backdrop { 
-  background-color: rgb(0 0 0 / 46%); 
+  background: rgb(0 0 0 / 70%); 
 }
-
 .gws-po__close {
   position: sticky;
   top: 1rem;
   float: right;
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   margin: 1rem;
   border: 0;
   border-radius: 50%;
@@ -38,30 +44,39 @@
   font: inherit;
   font-size: 1.6rem;
   cursor: pointer;
-  z-index: 10;
-  transition: var(--wp--custom--main-trans, all .3s ease-in-out);
-
-  &:focus-visible,
-  &:hover { 
-    outline: 3px solid var(--wp--preset--color--typo, #222); 
-    outline-offset: 3px; 
-  }
+  z-index: 1;
 }
-.gws-po__close
-
-.gws-po__content > :first-child { 
-  margin-top: 0; 
+.gws-po__close:hover { filter: brightness(1.12); }
+.gws-po__close:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
 }
-.gws-po__content > :last-child { 
-  margin-bottom: 0; 
+.gws-po__heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
-
+.gws-po__content { clear: both; }
+.gws-po__content > :first-child { margin-top: 0; }
+.gws-po__content > :last-child { margin-bottom: 0; }
 @media (prefers-reduced-motion: no-preference) {
-  .gws-po:popover-open { 
-    animation: gws-po-appear .3s ease-out; 
+  .gws-po[open] { animation: gws-po-appear .25s ease-out; }
+  @keyframes gws-po-appear {
+    from { opacity: 0; transform: translateY(10px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
-  
-  @keyframes gws-po-appear { 
-    from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } 
+}
+
+@media (max-width: 600px) {
+  .gws-po[data-gws-display="nonmodal"][open] {
+    inset: auto 1rem 1rem 1rem;
+    width: auto;
+    max-width: none;
   }
 }
